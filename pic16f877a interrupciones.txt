@@ -1,0 +1,100 @@
+#include <xc.h>
+#include <PIC16F877A.h>
+#include <pic.h>
+#define _XTAL_FREQ 4000000
+#define numero0   0xC0//0
+#define numero1   0xF9//1
+#define numero2   0xA4//2
+#define numero3   0xB0//3
+#define numero4   0x99//4
+#define numero5   0x92//5
+#define numero6   0x82//6
+#define numero7   0xF8//7
+#define numero8   0x80//8
+#define numero9   0x90//9
+#define numerox   0x40//EL PUNTO Y CERO
+#pragma config FOSC = XT        // Oscillator Selection bits (XT oscillator)
+#pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled)
+#pragma config PWRTE = OFF      // Power-up Timer Enable bit (PWRT disabled)
+#pragma config BOREN = OFF      // Brown-out Reset Enable bit (BOR disabled)
+#pragma config LVP = OFF        // Low-Voltage (Single-Supply) In-Circuit Serial Programming Enable bit (RB3 is digital I/O, HV on MCLR must be used for programming)
+#pragma config CPD = OFF        // Data EEPROM Memory Code Protection bit (Data EEPROM code protection off)
+#pragma config WRT = OFF        // Flash Program Memory Write Enable bits (Write protection off; all program memory may be written to by EECON control)
+#pragma config CP = OFF         // Flash Program Memory Code Protection bit (Code protection off)
+#define __delay_us(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000000)))
+#define __delay_ms(x) _delay((unsigned long)((x)*(_XTAL_FREQ/4000)))
+
+int numer(int); /*aca declaramos la funcion*/
+
+int numer(int a) {/*se hace la funcion*/
+    if (a == 0) {
+        a = numero0;
+        return a;
+    }
+    if (a == 1) {
+        a = numero1;
+        return a;
+    }
+    if (a == 2) {
+        a = numero2;
+        return a;
+    }
+    if (a == 3) {
+        a = numero3;
+        return a;
+    }
+    if (a == 4) {
+        a = numero4;
+        return a;
+    }
+    if (a == 5) {
+        a = numero5;
+        return a;
+    }
+    if (a == 6) {
+        a = numero6;
+        return a;
+    }
+    if (a == 7) {
+        a = numero7;
+        return a;
+    }
+    if (a == 8) {
+        a = numero8;
+        return a;
+    }
+    if (a == 9) {
+        a = numero9;
+        return a;
+    }
+}
+
+void interrupt isr(void) {
+    PORTD ^= 0xFF;
+    INTCONbits.INTF = 0;
+}
+
+int main() {
+    TMR0 = 0x00;
+    INTCON = 0x90;
+    INTCONbits.RBIE = 0;
+    INTCONbits.INTE = 0;
+    INTCONbits.TMR0IE = 0;
+    INTCONbits.PEIE = 0;
+    INTCONbits.GIE = 0;
+    OPTION_REGbits.INTEDG = 0;
+    TRISD = 0x00; //SALID
+
+    while (1) {
+        if (TMR0 <= 9) {
+            PORTD = numer(TMR0);
+            __delay_ms(100);
+        }
+        if (TMR0 >= 10) {
+            PORTD = 0;
+            return
+            PORTD = numer(TMR0);
+            __delay_ms(100);
+        }
+    }
+}
